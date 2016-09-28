@@ -11,5 +11,5 @@ Modules required:
 - Scipy (version 0.17.0 or above)
 - Matplotlib (version 1.4 or above)
 
-Note:
+*Note:*
 If the whole molecules or clusters shift or rotate when displaying the trajectory in VMD, it is strongly recommended to align the trajectory to the first frame using VMD before running this script. Using the aligned position file as the input file of the VACF script will get better result. The reason for performing the alignment is to reduce the influent bringing from the translation and rotation of the whole system to the finial VACF spectrum.
