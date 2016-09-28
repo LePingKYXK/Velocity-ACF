@@ -91,7 +91,7 @@ def calc_2D_ACF(array_2D):
     return autocor
 
 
-def VACF_total():
+def VACF_total(data):
     for i in xrange(len(data)):
         autocor_i = calc_ACF(data[i])
         if i == 0:
@@ -101,7 +101,7 @@ def VACF_total():
     return accum_autocor
 
 
-def calc_FFT_array_2D(array_2D):
+def calc_FFT_array_2D(array_2D, window):
     '''
     This function is for calculating the "intensity" of the ACF at each frequency
     by using the discrete fast Fourier transform.
@@ -182,7 +182,7 @@ if __name__ == "__main__":
             print '\n %d===' %i
             derivative = calc_2D_derivative(data[:,i,:], delta_t)
             VACF = calc_2D_ACF(derivative)
-            yfft_i = calc_FFT_array_2D(VACF)
+            yfft_i = calc_FFT_array_2D(VACF, window)
             if i == 0:
                 yfft = yfft_i
             else:
