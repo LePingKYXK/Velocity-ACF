@@ -14,36 +14,95 @@ delta_t = float(sys.argv[2]) * 1.0e-15
 window = sys.argv[3]
 fout = sys.argv[4]
 
+
+
 #### The functions will be used are listed as follows
-def read_data(fname, sel):
-    with open(fname, 'r') as fo:
-        line_count = 0
-        block_count = 0
-        atom_num = int(fo.readline())
-        line_per_block = atom_num + 2
-        coords = []
 
-        sel_atom_num = atom_num
-        #read the rest of the 1st block.
+def select_atoms():
+    sel = raw_input("\n (NOTE: The input values are the IDs of the molecule," 
+                    "    which should in range from 0 to the max N of the system.\n"
+                    "    The total number of your inputs should in range 2 to 4 (including boundary).\n"
+                "Here, 2 digitals (IDs) represent the diatomic stretch, \n"
+                "      3 digitals (IDs) mean the bend mode (triatomic angle), \n"
+                "      4 digitals (IDs) indicate the dihedral angle,\n"
+                "\nPlease enter the IDs: \n")
+
+    fmt = '\n The indices of the atoms you chose are: ' + '{:s} ' * len(sel)
+    print fmt.format(*sel)
+    if sel[0] == '-1':
+        print "Program will deal with all atoms."
+        return 
+    elif 2 <= len(sel) <= 4:
+        print "Program will deal with the selected atoms according to your inputs."
+        return map(int,sel.split())
+    else:
+        print "Error! Please check the inputs."
+
+
+def information(fname):
+    ''' fetch the munber of atoms and the elements information
+    from the first block of the input file. It looks duplicate,
+    but it would be more convenient for the following steps.
+    '''
+    elements = []
+    with open(fname,'r') as fo:
+        Natom = int(fo.next())
         fo.next()
-        for i in xrange(sel_atom_num):
+        for i in xrange(Natom):
             line = fo.next()
-            xyz = line.split()[1:]
-            coords.append(xyz)
-        block_count += 1
-            
-        #read the rest blocks.
-        for line in fo:
-            if line_count > 1:
-                xyz = line.split()[1:]
-                coords.append(xyz)
-            line_count += 1
-            if line_count == line_per_block:    #already read a block
-                line_count = 0
-                block_count += 1
+            info = line.split()[0]
+            elements.append(info)
+    return (Natom, elements)
 
-        shape = (block_count, sel_atom_num, 3)
-    return np.asfarray(coords,dtype=np.float64).reshape(shape)
+
+def screen_print(Natom,elements):
+    species = set(elements)
+    fmt1 = 'There are {:d} kinds of elements, which are '\
+            + '{:s}, ' * len(species)
+    print "\nNumber of atoms in this system: ", Natom
+    print fmt1.format(len(species), *species)
+
+    elements = np.asarray(elements)
+    indices = np.where(elements)[0]
+    if len(elements) <= 30:
+        print "\nThe elements and the corresponding indices are:"
+        fmt2 = 'Elements:' + '{:>3s}, ' * len(elements)
+        fmt3 = 'Indices: ' + '{:>3d}, ' * len(indices)
+        print fmt2.format(*elements)
+        print fmt3.format(*indices)
+
+        
+def choose_mode():
+    mode = raw_input("\n Please choose the mode: \n"
+                     "step: read data step by step, the finial data is a 2D array. \n"
+                     "      suit for large file (larger than 1 GB)\n" 
+                     "once: read data at once, the finial data is a 3D array. \n"
+                     "      suit for smal file (less than 1 GB)\n")
+    return mode
+
+
+def read_3d_data(fname, num_atoms):
+    ''' read data at once from input file.
+    The final data is a 3D array.
+    '''
+    time_step = 0
+    coords = []
+    with open(fname, 'r') as fo:
+        for line in fo:
+            try:
+                fo.next()
+            except StopIteration:
+                break
+            for n in xrange(num_atoms):
+                line = fo.next()
+                info = line.split()[1:]
+                coords.append(info)
+            time_step += 1
+    coords np.array(coords, np.float64).reshape(time_step, num_atoms, 3)
+    
+    if 2 <= len(sel) <= 4:
+        # read data according to the order of the inputs.
+        return coords[:,np.array(sel),:]
 
 
 def calc_2D_derivative(array_2D, delta_t):
@@ -52,6 +111,46 @@ def calc_2D_derivative(array_2D, delta_t):
     for i in xrange(3):
         dy[:,i] = np.gradient(array_2D[:,i], dx, edge_order=2)
     return dy
+
+
+def calc_bond(data):
+    return np.linalg.norm((data[:,0,:] - data[:,1,:]), axis=1)
+
+
+def calc_angle(data):
+
+    v1 = data[:,1,:] - data[:,0,:]
+    v2 = data[:,2,:] - data[:,0,:]
+    
+    dot = (v1 * v2).sum(axis=1)
+# calculate the dot product using Einstein summation
+#    dot = np.einsum("ij,ij->i", v1,v2)
+
+    norm1 = np.linalg.norm(v1,axis=1)
+    norm2 = np.linalg.norm(v2,axis=1)
+    
+    theta = np.arccos(dot/(norm1 * norm2))
+    
+    return np.degrees(theta)
+
+
+def calc_dihedral(data):
+
+    v1 = data[:,1,:] - data[:,0,:]
+    v2 = data[:,2,:] - data[:,1,:]
+    v3 = data[:,3,:] - data[:,2,:]
+
+    n1 = np.cross(v1,v2)
+    n2 = np.cross(v2,v3)
+
+    dot = (n1 * n2).sum(axis=1)
+
+    norm1 = np.linalg.norm(n1,axis=1)
+    norm2 = np.linalg.norm(n2,axis=1)
+    
+    phi = np.arccos(dot/(norm1 * norm2))
+    
+    return np.degrees(phi)
 
 
 def choose_window(data, kind=window):
@@ -133,12 +232,32 @@ def save_results(fout, wavenumber, intensity):
                    comments='')
 
 
-def plot(wavenumber, intensity):
+def visualization(derivative, ACF, wavenumber, intensity):
     matplotlib.style.use('ggplot')
-    plt.plot(wavenumber,intensity, color='black', linewidth=1.5)
-    plt.axis([0,4000, np.min(intensity),1.1*np.max(intensity)], fontsize=15)
+    derivative = derivative * delta_t
+    plt.subplot(3,1,1)
+    L1 = np.arange(len(derivative))
+    plt.plot(L1, derivative, color='red', linewidth=1.5)
+    plt.axis([0, len(derivative), 
+              1.1*np.min(derivative), 1.1*np.max(derivative)], fontsize=15)
+    plt.xlabel("Data Points", fontsize=15)
+    plt.ylabel("Derivative of Dipole (a.u.)", fontsize=15)
+
+    plt.subplot(3,1,2)
+    L2 = np.arange(len(ACF))
+    plt.plot(L2, ACF, color='red', linewidth=1.5)
+    plt.axis([0, len(ACF), 1.1*np.min(ACF), 1.1*np.max(ACF)], fontsize=15)
+    plt.xlabel("Data Points", fontsize=15)
+    plt.ylabel("DACF (a.u.)", fontsize=15)
+
+    plt.subplot(3,1,3)
+    plt.plot(wavenumber, intensity, color='black', linewidth=1.5)
+    plt.axis([0, 4000,
+             -1.1*np.min(intensity), 1.1*np.max(intensity)],
+             fontsize=15)
     plt.xlabel("Wavenumber (cm$^{-1}$)", fontsize=15)
     plt.ylabel("Intensity (a.u.)", fontsize=15)
+    plt.subplots_adjust(hspace = 0.5)
     plt.show()
 
 
@@ -160,20 +279,14 @@ beta = 1.0/(kB * T) #
 
 ######## The main program ########
 if __name__ == "__main__":
-    # Test. Input 3 numbers in range from 0 to 8.
-    sel = raw_input("(NOTE: The input values should in range of the cluster's IDs.\n"
-                    "The total number of your inputs should in range of 2 to 4 (including).\n"
-                    "Here, 2 digits means diatomic stretch, 3 digits means triatomic angle bend,\
-                     4 digits means dihedral angle,\n"
-                    "while -1 will read all atoms in the system.)\n"
-                    "\nPlease enter numbers: \n")
-    sel = map(int, sel.split())
-    print "Your inputs are:", sel
+    Natom, elements = information(fname)
+    screen_print(Natom,elements)
+    sel = select_atoms()
 
     start = time.clock()
     
     data = read_data(fname, sel)
-    print "check point 01: data", data, np.shape(data)
+#    print "check point 01: data", data, np.shape(data)
     # data is a 3-D array contained coordinates of selected atoms in whole trajectory.
     
     if len(sel) == 1 and sel[0] == -1:
@@ -189,11 +302,48 @@ if __name__ == "__main__":
                 yfft += yfft_i
         print "\ncheck point 04: yfft = \n", yfft, np.shape(yfft)
         
+    elif len(sel) == 2:
+        values = calc_bond(data)
+    elif len(sel) == 3:
+        values = calc_angle(data)
+    elif len(sel) == 4:
+        values = calc_dihedral(data)
+    else:
+        print "Error!"
+    derivative = calc_derivative(values, delta_t)
+    print "derivative of the data =", np.shape(derivative)
+
+    ACF = calc_ACF(derivative)
+    yfft = calc_FFT(ACF)
+    
     wavenumber = np.fft.fftfreq(len(yfft), delta_t * c)[0:int(len(yfft) / 2)]
     intensity = np.sum(yfft, axis=1)[0:int(len(yfft)/2)]
 
 #### Normalized the intensity
 #    norm_intensity = intensity / max(intensity)
     save_results(fout,wavenumber,intensity)
-    print "Work Completed! Used time: %.5f second." %(time.clock() - start)
-    plot(wavenumber, intensity)
+    finish = time.clock()
+    print "Work Completed! Used time: %.5f second." %(finish - start)
+    visualization(derivative, ACF, wavenumber, intensity)
+    
+
+    
+'''
+def read_2d_data(fname, Natom, sel):
+    ''' Using iterator to read the file to a list line by line,
+    then convert this list into ndarray.
+    The way of conversion dependends one the input numbers.
+    The order of the inputs also took into consideration.
+    '''
+    coords = []
+    for n in xrange(Natom):
+        line = fo.next()
+        xyz = line.split()[1:]
+        coords.append(xyz)
+    coords = np.asfarray(coords,dtype=np.float64).reshape(timestep,Natom,3)
+
+    if 2 <= len(sel) <= 4:
+        # read data according to the order of the inputs.
+        coords = coords[:,np.array(sel),:]
+    return coords
+'''
