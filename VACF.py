@@ -344,7 +344,7 @@ def visualization(derivative, ACF, wavenumber, intensity):
 
 
 ########################
-delta_t = 0.5 * 1e-15
+#delta_t = 0.5 * 1e-15
 #Fs = 1/delta_t
 #T = 50.0
 #scaling_factor = 0.968
