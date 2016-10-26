@@ -17,8 +17,18 @@
 ###    (3) OUTPUT_FILE_NAME: The Name of the Output File.                   ###
 ###                    (NOTE: do NOT need to type ">" sign!)                ###
 ###                                                                         ###
-###    After inputing the above mentioned values, the atoms specified       ###
-###        positions of atoms
+###    After inputing the above mentioned values, the program will list     ### 
+###  the atoms and their corresponding indices (only the first 35 atoms     ###
+###  will show if the system is too large).                                 ###
+###    And then the program will ask the user to enter the type of mode,    ###
+###  e.g. "s": stretch, "b": bend, "w": wag, ect. and the indices of the    ###
+###  atoms in order to choose the group of atoms involve the mode (the      ###
+###  partial VACF). If the user enter "all" or "-1", the program will       ###
+###  choose all atoms to calcluate the total VACF.                          ### . 
+###    Consequently, the program will ask the user to enter the type of     ###
+###  window function, e.g. "Gaussian", "BlackmanHarris", "Hamming "or       ###
+###  "Hann", ect.                                                           ###    
+###    After all steps of inputs finishing, the calculation begins.         ###  
 ###                                                                         ###
 ###############################  Let's Try It! ################################
 
