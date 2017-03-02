@@ -91,7 +91,7 @@ def screen_print(Natom, elements, indices):
         print pfmt2.format(*elements)
         print pfmt3.format(*indices)
     else: #### e.g. elements == []
-        sys.exit("WARNING! The no element! Please check the input file.")
+        sys.exit("WARNING! No element! Please check the input file.")
 
 
 selection_notes = "\n  (NOTE: The input values are the IDs of the molecule,"\
