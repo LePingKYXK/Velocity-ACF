@@ -22,10 +22,10 @@ If the whole molecules or clusters shift or rotate when displaying the trajector
 
 ### The values need to input manually when runing this script    
   1. `INPUT_FILE_NAME`: The POSITION.xyz file, which contains the coordinates of the system at each time step (frame).  
-        + <sub>NOTE: do NOT need to re-split the Position file)</sub>
+        + <sub>*NOTE: do NOT need to re-split the Position file*</sub>
   2. `DELTA_T`: The Time_step set in simulation, in unit of fs
   3. `OUTPUT_FILE_NAME`: The Name of the Output File.
-        + <sub>NOTE: do NOT need to type ">" sign!</sub>
+        + *<sub>NOTE: do NOT need to type ">" sign!</sub>*
 
 ### Main improvment in this version is that the script became more user-friendly
   After inputing the above mentioned values, the program will list the atoms and their corresponding indices (only the first 35 atoms will show if the system is too large). Then the program will ask the user to enter the type of mode, e.g. "s": stretch, "b": bend, "r": internal rotation, and "u": umbrella, and the indices of the group of atoms corresponding to the mode (That is the reason for the script called *partial* VACF).
