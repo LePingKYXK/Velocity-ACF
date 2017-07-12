@@ -29,14 +29,14 @@ If the whole molecules or clusters shift or rotate when displaying the trajector
 
 ### Main improvment in this version is that the script became more user-friendly
   After inputing the above mentioned values, the program will list the atoms and their corresponding indices (only the first 35 atoms will show if the system is too large). Then the program will ask the user to enter the type of mode, e.g. "s": stretch, "b": bend, "r": internal rotation, and "u": umbrella, and the indices of the group of atoms corresponding to the mode (That is the reason for the script called *partial* VACF).
-- If you want to calculate the VACF of stretch mode between two atoms (e.g. the atom No. 5 and atom No. 7), please type
-s 5 7
+- If you want to calculate the VACF of stretch mode between two atoms (e.g. the atom No. 5 and atom No. 7), please type  
+    `s 5 7`
 
 - If you want to calculate the VACF of bend mode between three atoms (e.g. the angle between atom No. 1, atom No. 2, atom No. 3), please type
-b 1 2 3
+    `b 1 2 3`
 
 - If you want to calculate the VACF of internal rotation of within four atoms (e.g. the dihedral angle involve atom No. 8, atom No. 9 atom No. 10, and atom No. 11), please type 
-r  8 9 10 11
+    `r 8 9 10 11`
 
 - If the user enter "all" or "-1", the program will choose all atoms to calcluate the total VACF.  
 
