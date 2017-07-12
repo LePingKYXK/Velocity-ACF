@@ -40,8 +40,10 @@ If the whole molecules or clusters shift or rotate when displaying the trajector
 
 - If the user enter "all" or "-1", the program will choose all atoms to calcluate the total VACF.  
 
-  Consequently, the program will ask the user to enter the type of window function, e.g. "Gaussian", "BlackmanHarris", "Hamming "or "Hann", ect.  
-  
-  After all steps of inputs finishing, the calculation begins.  
-  
+Consequently, the program will ask the user to enter the type of window function, e.g. "Gaussian", "BlackmanHarris", "Hamming "or "Hann", ect.  
+
+After all steps of inputs finishing, the calculation begins.  
+
+The result will save as a `.txt` file and the plot will be shown on the screen.
+
 ### ############################  Let's Try It! ############################ ###
