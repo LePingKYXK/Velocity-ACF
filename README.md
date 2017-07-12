@@ -17,19 +17,19 @@ If the whole molecules or clusters shift or rotate when displaying the trajector
 `huan.wang@mail.huji.ac.il` or `wanghuan@iccas.ac.cn (China)`
 
 ## PLEASE READ THE FOLLOWING INSTRUCTIONS BEFORE RUNNING SCRIPT 
-### The Format for Running This Script:
+### The Format for Running This Script:  
 `python` `VACF_KW.py` *`INPUT_FILE_NAME`* *`DELTA_T`* *`OUTPUT_FILE_NAME`*  
 
-### The values need to input manually when runing this script
-    1. `INPUT_FILE_NAME`: The POSITION.xyz file, which contains the coordinates of the system at each time step (frame).  
-        + NOTE: do NOT need to re-split the Position file)
-    2. `DELTA_T`: The Time_step set in simulation, in unit of fs
-    3. `OUTPUT_FILE_NAME`: The Name of the Output File.
-        + NOTE: do NOT need to type ">" sign!
+### The values need to input manually when runing this script    
+  1. `INPUT_FILE_NAME`: The POSITION.xyz file, which contains the coordinates of the system at each time step (frame).  
+    + <sub>NOTE: do NOT need to re-split the Position file)</sub>
+  2. `DELTA_T`: The Time_step set in simulation, in unit of fs
+  3. `OUTPUT_FILE_NAME`: The Name of the Output File.
+    + <sub>NOTE: do NOT need to type ">" sign!</sub>
 
 ### Main improvment in this version is that the script became more user-friendly
   After inputing the above mentioned values, the program will list the atoms and their corresponding indices (only the first 35 atoms will show if the system is too large). Then the program will ask the user to enter the type of mode, e.g. "s": stretch, "b": bend, "r": internal rotation, and "u": umbrella, and the indices of the group of atoms corresponding to the mode (the partial VACF). 
-If the user enter "all" or "-1", the program will choose all atoms to calcluate the total VACF.
-  Consequently, the program will ask the user to enter the type of window function, e.g. "Gaussian", "BlackmanHarris", "Hamming "or "Hann", ect. 
-  After all steps of inputs finishing, the calculation begins. 
-### ############################  Let's Try It! #############################
+If the user enter "all" or "-1", the program will choose all atoms to calcluate the total VACF.  
+  Consequently, the program will ask the user to enter the type of window function, e.g. "Gaussian", "BlackmanHarris", "Hamming "or "Hann", ect.  
+  After all steps of inputs finishing, the calculation begins.  
+### ############################  Let's Try It! ############################ ###
