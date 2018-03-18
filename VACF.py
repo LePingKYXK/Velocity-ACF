@@ -8,13 +8,14 @@
 ###    ./VACF_KW.py INPUT_FILE_NAME DELTA_T OUTPUT_FILE_NAME                ###
 ###                                                                         ###
 ###    The values need to input manually when runing this script            ###
-###                                                                         ### 
-###    (1) INPUT_FILE_NAME: The POSITION.xyz file                           ###
+###    (1) DIRECTORY_OF_YOUR_DATA: The path contains your data              ### 
+###                                                                         ###
+###    (2) INPUT_FILE_NAME: The POSITION.xyz file                           ###
 ###                     (NOTE: do NOT need to re-split the Position file)   ###
 ###                                                                         ###
-###    (2) DELTA_T: The Time_step set in simulation, in unit of fs          ###
+###    (3) DELTA_T: The Time_step set in simulation, in unit of fs          ###
 ###                                                                         ###
-###    (3) OUTPUT_FILE_NAME: The Name of the Output File.                   ###
+###    (4) OUTPUT_FILE_NAME: The Name of the Output File.                   ###
 ###                    (NOTE: do NOT need to type ">" sign!)                ###
 ###                                                                         ###
 ###    After inputing the above mentioned values, the program will list     ### 
@@ -39,25 +40,27 @@ import math
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 import sys
 import time
 
-fname = sys.argv[1]
-delta_t = float(sys.argv[2]) * 1e-15
-fout = sys.argv[3]
+path = sys.argv[1]
+fname = sys.argv[2]
+delta_t = float(sys.argv[3]) * 1e-15
+fout = sys.argv[4]
 
 
 
 
 #### The functions will be used are listed as follows
 
-def information(fname):
+def information(filename):
     ''' fetch the munber of atoms and the elements information
     from the first block of the input file. It looks duplicate,
     but it would be more convenient for the following steps.
     '''
     elements = []
-    with open(fname,'r') as fo:
+    with open(filename,'r') as fo:
         Natom = int(fo.next())
         fo.next()
         for i in xrange(Natom):
@@ -122,8 +125,8 @@ def select_atoms(selection_notes):
         return (mode, map(int, sel.split()))
 
 
-def read_data(fname, sel):
-    with open(fname, 'r') as fo:
+def read_data(filename, sel):
+    with open(filename, 'r') as fo:
         timestep = 0
         coords = []
         
@@ -360,7 +363,8 @@ c = 2.9979245899e10 # speed of light in vacuum in [cm/s], from Wikipedia.
 
 ######## The main program ########
 if __name__ == "__main__":
-    Natom, elements, indices = information(fname)
+	filename = os.path.join(path, fname)
+    Natom, elements, indices = information(filename)
     screen_print(Natom, elements, indices)
     # Test. Input 3 numbers in range from 0 to 8.
     mode, sel = select_atoms(selection_notes)
@@ -368,7 +372,7 @@ if __name__ == "__main__":
     
     start = time.clock()
     
-    data = read_data(fname, sel)
+    data = read_data(filename, sel)
     #print "check point 01: data", data, np.shape(data)
     # data is a 3-D array contained coordinates of selected atoms in whole trajectory.
     read_data_time = time.clock() - start
