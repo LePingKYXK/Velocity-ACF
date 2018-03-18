@@ -161,15 +161,12 @@ def read_data(filename, sel):
         return coords[:,np.array(sel),:]
     
 
-
-
-
 def calc_derivative(array_1D, delta_t):
     ''' The derivatives of the angle_array were obtained by using the
     finite differences method.
     '''
-    dx = np.repeat(delta_t, len(array_1D))
-    return np.gradient(array_1D, dx)
+    dy = np.gradient(array_1D)
+    return np.divide(dy, delta_t)
 
 
 def calc_bond(data):
