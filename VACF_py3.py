@@ -9,12 +9,14 @@
 ###                                                                         ###
 ###    The values need to input manually when runing this script            ###
 ###                                                                         ### 
-###    (1) INPUT_FILE_NAME: The POSITION.xyz file                           ###
+###    (1) DIRECTORY_OF_YOUR_DATA: The path contains your data              ### 
+###                                                                         ###
+###    (2) INPUT_FILE_NAME: The POSITION.xyz file                           ###
 ###                     (NOTE: do NOT need to re-split the Position file)   ###
 ###                                                                         ###
-###    (2) DELTA_T: The Time_step set in simulation, in unit of fs          ###
+###    (3) DELTA_T: The Time_step set in simulation, in unit of fs          ###
 ###                                                                         ###
-###    (3) OUTPUT_FILE_NAME: The Name of the Output File.                   ###
+###    (4) OUTPUT_FILE_NAME: The Name of the Output File.                   ###
 ###                    (NOTE: do NOT need to type ">" sign!)                ###
 ###                                                                         ###
 ###    After inputing the above mentioned values, the program will list     ### 
@@ -41,12 +43,23 @@ import numpy as np
 import os, sys, time
 
 
-file_path = r"D:\HUJI_data\Protonated_Ammonia_Cluster\CP2K\N2H7_C3v_B3LYP-D3_tight_PR03"#r"E:\projects\Velocity-ACF\test_data"#sys.argv[1]
-file_name = "nve_50K_N2H7_tight_Conv_PR01-pos-1.xyz"#"nve_50K_ArH5O2Bz_PBE_new-vel-1.xyz"#sys.argv[2]
-delta_t = 0.5 * 1e-15 #float(sys.argv[3]) * 1e-15
-outputf = "tttt.txt"#sys.argv[4]
+file_path = sys.argv[1]
+file_name = sys.argv[2]
+delta_t = float(sys.argv[3]) * 1e-15
+outputf = sys.argv[4]
 
 
+########################
+#delta_t = 0.5 * 1e-15
+#Fs = 1/delta_t
+#T = 50.0
+#scaling_factor = 0.968
+
+######## The constants will be used in this script ########
+c = 2.9979245899e10 # speed of light in vacuum in [cm/s], from Wikipedia.
+#kB = 0.6950347      # Boltzman constant in [cm^-1/K], from Wikipedia.
+#h_bar = 6.283185    # Reduced Planck constant in atomic unit, where h == 2*pi
+#beta = 1.0/(kB * T) #  
 
 
 #### The functions will be used are listed as follows
@@ -167,7 +180,6 @@ def calc_derivative(array_1D, delta_t):
     finite differences method.
     '''
     dy = np.gradient(array_1D)
-    #dx = np.repeat(delta_t, len(array_1D))
     return np.divide(dy, delta_t)
 
 
@@ -350,21 +362,6 @@ def visualization(derivative, ACF, wavenumber, intensity):
     plt.ylabel("Intensity (a.u.)", fontsize=15)
     plt.subplots_adjust(hspace = 0.5)
     plt.show()
-
-
-
-########################
-#delta_t = 0.5 * 1e-15
-#Fs = 1/delta_t
-#T = 50.0
-#scaling_factor = 0.968
-
-######## The constants will be used in this script ########
-c = 2.9979245899e10 # speed of light in vacuum in [cm/s], from Wikipedia.
-#kB = 0.6950347      # Boltzman constant in [cm^-1/K], from Wikipedia.
-#h_bar = 6.283185    # Reduced Planck constant in atomic unit, where h == 2*pi
-#beta = 1.0/(kB * T) #                        
-
 
 
 def main(file_path, file_name):
