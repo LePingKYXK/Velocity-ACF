@@ -18,7 +18,7 @@ If the whole molecules or clusters shift or rotate when displaying the trajector
 
 ## PLEASE READ THE FOLLOWING INSTRUCTIONS BEFORE RUNNING SCRIPT 
 ### The Format for Running This Script:  
-`python` `VACF_KW.py` *`INPUT_FILE_NAME`* *`DELTA_T`* *`OUTPUT_FILE_NAME`*  
+`python` `VACF_KW.py` *`DIRECTORY_OF_YOUR_DATA`* *`INPUT_FILE_NAME`* *`DELTA_T`* *`OUTPUT_FILE_NAME`*  
 
 ### The values need to input manually when runing this script    
   1. `INPUT_FILE_NAME`: The POSITION.xyz file, which contains the coordinates of the system at each time step (frame).  
