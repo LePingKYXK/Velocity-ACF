@@ -1,5 +1,5 @@
 # Velocity-ACF
-This Python (version 2.7) Script is one of my projects dealing with the Spectrum. It Based on Fast Fourier Transform (FFT) of the Velocity Autocorrelation Function (VACF).  
+This Python (version 2.7) Script is one of my projects dealing with the Spectrum. It based on Fast Fourier Transform (FFT) of the Velocity Autocorrelation Function (VACF).  
     
 This script first read the position file (with the extension of .xyz) containing the cartesian coordinates, whcih is generated from the CP2K/QuickStep simulations. And then calculate the time derivative of each component (x, y, z), yielding the velocities of each compoent (v_i, here i = x, y, z). After computing the autocorrelation of each velocity component, v_i, the VACF data array obtained. By performing the FFT on the VACF, the final spectrum produced. And then plotted on the graph panel by using the Matplotlib module.  
 
@@ -47,3 +47,6 @@ After all steps of inputs finishing, the calculation begins.
 The result will save as a `.txt` file and the plot will be shown on the screen.
 
 ### ############################  Let's Try It! ############################ ###
+
+
+A Python 3 verion of VACF was released on Mar. 18, 2018. 
